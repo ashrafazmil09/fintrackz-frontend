@@ -10,10 +10,59 @@ export default function LoginForm({ onSubmit }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", width: 300 }}>
-      <input type="email" placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} required />
-      <input type="password" placeholder="Password" value={password} onChange={(e) => setPassword(e.target.value)} required />
-      <button type="submit">Login</button>
+    <form
+      onSubmit={handleSubmit}
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        gap: 15, // space between inputs
+        alignItems: "center", // center inputs horizontally
+      }}
+    >
+      <input
+        type="email"
+        placeholder="Email"
+        value={email}
+        onChange={(e) => setEmail(e.target.value)}
+        required
+        style={{
+          width: "100%",
+          padding: 10,
+          borderRadius: 8,
+          border: "1px solid #ccc",
+          fontSize: 16,
+        }}
+      />
+      <input
+        type="password"
+        placeholder="Password"
+        value={password}
+        onChange={(e) => setPassword(e.target.value)}
+        required
+        style={{
+          width: "100%",
+          padding: 10,
+          borderRadius: 8,
+          border: "1px solid #ccc",
+          fontSize: 16,
+        }}
+      />
+      <button
+        type="submit"
+        style={{
+          width: "50%",
+          padding: 10,
+          borderRadius: 8,
+          border: "none",
+          backgroundColor: "#FF6347",
+          color: "#fff",
+          fontSize: 16,
+          cursor: "pointer",
+        }}
+      >
+        Login
+      </button>
     </form>
   );
 }

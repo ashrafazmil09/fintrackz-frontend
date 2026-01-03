@@ -16,8 +16,9 @@ export default function RegistrationForm({ onSubmit }) {
       style={{
         display: "flex",
         flexDirection: "column",
-        width: 300,
-        gap: 10,
+        width: "100%",
+        gap: 15, // space between inputs
+        alignItems: "center", // center inputs horizontally
       }}
     >
       <input
@@ -26,6 +27,13 @@ export default function RegistrationForm({ onSubmit }) {
         value={username}
         onChange={(e) => setUsername(e.target.value)}
         required
+        style={{
+          width: "100%",
+          padding: 10,
+          borderRadius: 8,
+          border: "1px solid #ccc",
+          fontSize: 16,
+        }}
       />
       <input
         type="email"
@@ -33,6 +41,13 @@ export default function RegistrationForm({ onSubmit }) {
         value={email}
         onChange={(e) => setEmail(e.target.value)}
         required
+        style={{
+          width: "100%",
+          padding: 10,
+          borderRadius: 8,
+          border: "1px solid #ccc",
+          fontSize: 16,
+        }}
       />
       <input
         type="password"
@@ -40,8 +55,27 @@ export default function RegistrationForm({ onSubmit }) {
         value={password}
         onChange={(e) => setPassword(e.target.value)}
         required
+        style={{
+          width: "100%",
+          padding: 10,
+          borderRadius: 8,
+          border: "1px solid #ccc",
+          fontSize: 16,
+        }}
       />
-      <button type="submit" style={{ padding: "8px 12px" }}>
+      <button
+        type="submit"
+        style={{
+          width: "50%",
+          padding: 10,
+          borderRadius: 8,
+          border: "none",
+          backgroundColor: "#FF6347",
+          color: "#fff",
+          fontSize: 16,
+          cursor: "pointer",
+        }}
+      >
         Register
       </button>
     </form>
