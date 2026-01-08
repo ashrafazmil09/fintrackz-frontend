@@ -21,8 +21,8 @@ export const api = axios.create({
 
 // Attach JWT dynamically before each request
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem("token"); // read fresh every time
-  if (token) {
+  const token = localStorage.getItem("token");
+  if (token && !config.url.includes("/auth/")) {
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
