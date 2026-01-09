@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Navigate } from "react-router-dom";
+import { isTokenExpired } from "../utils/jwt";
 
 interface PrivateRouteProps {
   children: ReactNode;
@@ -7,5 +8,11 @@ interface PrivateRouteProps {
 
 export default function PrivateRoute({ children }: PrivateRouteProps) {
   const token = localStorage.getItem("token");
-  return token ? <>{children}</> : <Navigate to="/login" replace />;
+
+  if (!token || isTokenExpired(token)) {
+    localStorage.removeItem("token");
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
 }
