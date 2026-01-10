@@ -7,7 +7,7 @@ interface ProfileData {
   role?: string;
 }
 
-export default function Dashboard() {
+export default function Profile() {
   const [data, setData] = useState<ProfileData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -28,7 +28,7 @@ export default function Dashboard() {
 
   return (
     <div className="p-10">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-4">Profile</h1>
 
       <div className="bg-gray-100 p-4 rounded space-y-2">
         <p>
@@ -39,16 +39,9 @@ export default function Dashboard() {
         </p>
 
         {data.role && (
-          <>
-            <p>
-              <strong>Role:</strong> {data.role.replace("ROLE_", "")}
-            </p>
-            <p>
-              {data.role === "ROLE_ADMIN"
-                ? "Welcome ADMIN, manage your system!"
-                : "Welcome USER, here is your dashboard!"}
-            </p>
-          </>
+          <p>
+            <strong>Role:</strong> {data.role.replace("ROLE_", "")}
+          </p>
         )}
       </div>
     </div>

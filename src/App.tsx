@@ -1,15 +1,15 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
-import Login from "./pages/Login";
-import Registration from "./pages/Registration";
 import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile"; // <-- import profile
 import PrivateRoute from "./components/PrivateRoute";
 import AppLayout from "./layout/AppLayout";
-import { getRoleFromToken, isTokenExpired } from "./utils/jwt";
+import Login from "./pages/auth/Login";
+import Registration from "./pages/Registration";
+import BankAccounts from "./pages/accounts/BankAccounts";
+import Ewallet from "./pages/accounts/EWallet";
+import Cash from "./pages/accounts/Cash";
 
 export default function App() {
-  const token = localStorage.getItem("token");
-  const loggedIn = token && !isTokenExpired(token);
-
   return (
     <BrowserRouter>
       <Routes>
@@ -17,23 +17,59 @@ export default function App() {
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Registration />} />
 
-        {/* Protected dashboard routes */}
+        {/* Protected top-level pages */}
         <Route
-          path="/dashboard/*"
+          path="/dashboard"
           element={
             <PrivateRoute>
               <AppLayout>
-                <Routes>
-                  <Route index element={<Dashboard />} />
-                  {/* Nested dashboard pages */}
-                  <Route path="*" element={<Navigate to="/dashboard" replace />} />
-                </Routes>
+                <Dashboard />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <Profile />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/bankaccounts"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <BankAccounts />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/ewallet"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <Ewallet />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/cash"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <Cash />
               </AppLayout>
             </PrivateRoute>
           }
         />
 
-        {/* Top-level fallback */}
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/dashboard" replace />} />
       </Routes>
     </BrowserRouter>

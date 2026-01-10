@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import LoginForm from "../components/LoginForm";
-import { login } from "../api/auth";
+import LoginForm from "../../components/auth/LoginForm";
+import { login } from "../../api/auth";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -21,7 +21,9 @@ export default function Login() {
         <h1 className="text-4xl font-bold bg-gradient-to-r from-orange-400 to-orange-200 bg-clip-text text-transparent">
           FinTrackz
         </h1>
-        <p className="italic text-gray-500 mb-8 mt-2">Your personal finance tracker</p>
+        <p className="italic text-gray-500 mb-8 mt-2">
+          Your persodnal finance tracker
+        </p>
         <h2 className="text-xl font-semibold mb-6">Login</h2>
 
         <div className="w-full">

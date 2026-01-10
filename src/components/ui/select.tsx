@@ -2,7 +2,9 @@ import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
 import { Check, ChevronDown } from "lucide-react";
 
-interface SelectProps extends React.ComponentProps<typeof SelectPrimitive.Root> {}
+interface SelectProps extends React.ComponentProps<
+  typeof SelectPrimitive.Root
+> {}
 
 export function Select({ ...props }: SelectProps) {
   return <SelectPrimitive.Root {...props} />;
@@ -26,7 +28,9 @@ export function SelectTrigger({
   );
 }
 
-export function SelectValue(props: React.ComponentProps<typeof SelectPrimitive.Value>) {
+export function SelectValue(
+  props: React.ComponentProps<typeof SelectPrimitive.Value>,
+) {
   return <SelectPrimitive.Value {...props} />;
 }
 
@@ -41,7 +45,9 @@ export function SelectContent({
         className={`overflow-hidden rounded-md border border-gray-200 bg-white shadow-md ${className}`}
         {...props}
       >
-        <SelectPrimitive.Viewport className="p-1">{children}</SelectPrimitive.Viewport>
+        <SelectPrimitive.Viewport className="p-1">
+          {children}
+        </SelectPrimitive.Viewport>
       </SelectPrimitive.Content>
     </SelectPrimitive.Portal>
   );

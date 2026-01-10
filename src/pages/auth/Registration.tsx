@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
-import RegistrationForm from "../components/auth/RegistrationForm";
-import { register } from "../api/auth";
+import RegistrationForm from "../../components/auth/RegistrationForm";
+import { register } from "../../api/auth";
 
 export default function Registration() {
   const navigate = useNavigate();
