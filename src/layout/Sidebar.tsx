@@ -18,7 +18,15 @@ export default function Sidebar() {
   const role = token ? getRoleFromToken(token) : null;
 
   const [collapsed, setCollapsed] = useState(false);
-  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+  const [openDropdowns, setOpenDropdowns] = useState<string[]>([]);
+
+  const toggleDropdown = (label: string) => {
+    if (openDropdowns.includes(label)) {
+      setOpenDropdowns(openDropdowns.filter((l) => l !== label));
+    } else {
+      setOpenDropdowns([...openDropdowns, label]);
+    }
+  };
 
   const links = [
     {
@@ -34,17 +42,17 @@ export default function Sidebar() {
       dropdown: [
         {
           label: "Bank Accounts",
-          to: "/bankaccounts",
+          to: "/accounts/bankaccounts",
           icon: <BanknotesIcon className="w-4 h-4" />,
         },
         {
           label: "E-Wallet",
-          to: "/ewallet",
+          to: "/accounts/ewallet",
           icon: <WalletIcon className="w-4 h-4" />,
         },
         {
           label: "Cash",
-          to: "/cash",
+          to: "/accounts/cash",
           icon: <CurrencyDollarIcon className="w-4 h-4" />,
         },
       ],
@@ -75,7 +83,7 @@ export default function Sidebar() {
   ];
 
   const filteredLinks = links.filter(
-    (link) => role && link.roles.includes(role.replace("ROLE_", ""))
+    (link) => role && link.roles.includes(role.replace("ROLE_", "")),
   );
 
   return (
@@ -103,25 +111,21 @@ export default function Sidebar() {
           link.dropdown ? (
             <div key={link.label}>
               <button
-                onClick={() =>
-                  setOpenDropdown(
-                    openDropdown === link.label ? null : link.label
-                  )
-                }
+                onClick={() => toggleDropdown(link.label)}
                 className={`flex items-center gap-3 px-3 py-2 rounded w-full hover:bg-gray-700 ${
-                  openDropdown === link.label ? "bg-gray-700" : ""
+                  openDropdowns.includes(link.label) ? "bg-gray-700" : ""
                 }`}
               >
                 {link.icon}
                 {!collapsed && <span>{link.label}</span>}
                 {!collapsed && (
                   <span className="ml-auto">
-                    {openDropdown === link.label ? "▾" : "▸"}
+                    {openDropdowns.includes(link.label) ? "▾" : "▸"}
                   </span>
                 )}
               </button>
 
-              {openDropdown === link.label && !collapsed && (
+              {openDropdowns.includes(link.label) && !collapsed && (
                 <div className="flex flex-col pl-8 mt-1 space-y-1">
                   {link.dropdown.map((sub) => (
                     <NavLink
@@ -153,7 +157,7 @@ export default function Sidebar() {
               {link.icon}
               {!collapsed && <span>{link.label}</span>}
             </NavLink>
-          )
+          ),
         )}
       </nav>
 

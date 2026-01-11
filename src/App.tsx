@@ -8,6 +8,8 @@ import Registration from "./pages/Registration";
 import BankAccounts from "./pages/accounts/BankAccounts";
 import Ewallet from "./pages/accounts/EWallet";
 import Cash from "./pages/accounts/Cash";
+import Incomes from "./pages/transactions/Incomes";
+import Expenses from "./pages/transactions/Expenses";
 
 export default function App() {
   return (
@@ -39,7 +41,7 @@ export default function App() {
           }
         />
         <Route
-          path="/bankaccounts"
+          path="/accounts/bankaccounts"
           element={
             <PrivateRoute>
               <AppLayout>
@@ -49,7 +51,7 @@ export default function App() {
           }
         />
         <Route
-          path="/ewallet"
+          path="/accounts/ewallet"
           element={
             <PrivateRoute>
               <AppLayout>
@@ -59,11 +61,31 @@ export default function App() {
           }
         />
         <Route
-          path="/cash"
+          path="/accounts/cash"
           element={
             <PrivateRoute>
               <AppLayout>
                 <Cash />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/transactions/incomes"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <Incomes />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/transactions/expenses"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <Expenses />
               </AppLayout>
             </PrivateRoute>
           }

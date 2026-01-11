@@ -45,4 +45,25 @@ export const deleteAccount = async (id) => {
   await api.delete(`/accounts/${id}`);
 };
 
+// ---------------- Transactions ----------------
+export const getTransactions = async (type) => {
+  const res = await api.get("/transactions", {
+    params: { type },
+  });
+  return res.data;
+};
+
+export const createTransaction = async (data) => {
+  const res = await api.post("/transactions", data);
+  return res.data;
+};
+
+export const updateTransaction = async (id, data) => {
+  const res = await api.put(`/transactions/${id}`, data);
+  return res.data;
+};
+
+export const deleteTransaction = async (id) => {
+  await api.delete(`/transactions/${id}`);
+};
 

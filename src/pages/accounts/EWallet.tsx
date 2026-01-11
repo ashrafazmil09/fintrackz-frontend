@@ -16,7 +16,9 @@ export default function EWallets() {
   const [error, setError] = useState<string | null>(null);
 
   const [showForm, setShowForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState<EWalletAccount | null>(null);
+  const [editingAccount, setEditingAccount] = useState<EWalletAccount | null>(
+    null,
+  );
   const [deleteTarget, setDeleteTarget] = useState<EWalletAccount | null>(null);
 
   // Fetch accounts
@@ -129,8 +131,8 @@ export default function EWallets() {
                   if (!deleteTarget) return;
                   try {
                     await api.delete(`/accounts/${deleteTarget.id}`);
-                    setAccounts(prev =>
-                      prev.filter((a) => a.id !== deleteTarget.id)
+                    setAccounts((prev) =>
+                      prev.filter((a) => a.id !== deleteTarget.id),
                     );
                   } catch {
                     alert("Delete failed");

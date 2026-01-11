@@ -1,58 +1,74 @@
 import { useEffect, useState } from "react";
 import api from "../../api/api";
-import BankAccountForm from "../../components/accounts/BankAccountForm";
+import ExpensesForm from "../../components/transactions/ExpensesForm";
 
-export interface BankAccount {
+export interface ExpenseTransaction {
   id: number;
-  name: string;
-  platform: string;
-  balance: number;
-  type: "BANK";
+  user_id: number;
+  account_id: number;
+  account: {
+    name: string;
+    platform: string;
+  };
+  amount: number;
+  description: string;
+  transaction_date: string;
 }
 
-export default function BankAccounts() {
-  const [accounts, setAccounts] = useState<BankAccount[]>([]);
+interface GetTransactionsPayload {
+  accountId?: number;
+  account_name?: string;
+  categoryId: number;
+  startDate?: string;
+  endDate?: string;
+}
+
+export default function Expenses() {
+  const [transactions, setTransactions] = useState<ExpenseTransaction[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [showForm, setShowForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState<BankAccount | null>(
+  const [editingTransaction, setEditingTransaction] =
+    useState<ExpenseTransaction | null>(null);
+  const [deleteTarget, setDeleteTarget] = useState<ExpenseTransaction | null>(
     null,
   );
-  const [deleteTarget, setDeleteTarget] = useState<BankAccount | null>(null);
 
-  // Fetch bank accounts
-  const fetchAccounts = async () => {
+  const fetchTransactions = async (
+    payload: GetTransactionsPayload = { categoryId: 2 },
+  ) => {
     try {
       setLoading(true);
-      const res = await api.get("/accounts?type=BANK");
-      setAccounts(res.data);
-    } catch {
-      setError("Failed to load bank accounts");
+      const res = await api.get("/transactions", { params: payload });
+      setTransactions(res.data);
+    } catch (err) {
+      console.error("Failed to fetch transactions:", err);
+      setError("Failed to load income transactions");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchAccounts();
+    fetchTransactions();
   }, []);
 
   const handleSaved = () => {
     setShowForm(false);
-    setEditingAccount(null);
-    fetchAccounts();
+    setEditingTransaction(null);
+    fetchTransactions();
   };
 
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Bank Accounts</h1>
+        <h1 className="text-2xl font-bold">Expense Transactions</h1>
         <button
           onClick={() => setShowForm(true)}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
+          className="bg-red-600 text-white px-4 py-2 rounded"
         >
-          + Add Bank Account
+          + Add Expense
         </button>
       </div>
 
@@ -61,31 +77,31 @@ export default function BankAccounts() {
 
       {!loading && !error && (
         <>
-          {accounts.length === 0 ? (
-            <p>No bank accounts found.</p>
+          {transactions.length === 0 ? (
+            <p>No expense transactions found.</p>
           ) : (
             <table className="w-full border">
               <thead className="bg-gray-100">
                 <tr>
-                  <th className="p-2 text-left">Name</th>
+                  <th className="p-2 text-left">Account</th>
                   <th className="p-2 text-left">Platform</th>
-                  <th className="p-2 text-right">Balance</th>
+                  <th className="p-2 text-left">Description</th>
+                  <th className="p-2 text-right">Amount</th>
                   <th className="p-2 text-center">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {accounts.map((acc) => (
-                  <tr key={acc.id} className="border-t">
-                    <td className="p-2">{acc.name}</td>
-                    <td className="p-2">{acc.platform}</td>
-                    <td className="p-2 text-right">
-                      RM {acc.balance.toFixed(2)}
-                    </td>
+                {transactions.map((t) => (
+                  <tr key={t.id} className="border-t">
+                    <td className="p-2">{t.account.name}</td>
+                    <td className="p-2">{t.account.platform}</td>
+                    <td className="p-2">{t.description}</td>
+                    <td className="p-2 text-right">RM {t.amount.toFixed(2)}</td>
                     <td className="p-2 text-center space-x-2">
                       <button
                         className="text-blue-600"
                         onClick={() => {
-                          setEditingAccount(acc);
+                          setEditingTransaction(t);
                           setShowForm(true);
                         }}
                       >
@@ -93,7 +109,7 @@ export default function BankAccounts() {
                       </button>
                       <button
                         className="text-red-600"
-                        onClick={() => setDeleteTarget(acc)}
+                        onClick={() => setDeleteTarget(t)}
                       >
                         Delete
                       </button>
@@ -108,22 +124,22 @@ export default function BankAccounts() {
 
       {/* Add/Edit Modal */}
       {showForm && (
-        <BankAccountForm
-          account={editingAccount}
+        <ExpensesForm
+          transaction={editingTransaction}
           onClose={() => {
             setShowForm(false);
-            setEditingAccount(null);
+            setEditingTransaction(null);
           }}
           onSaved={handleSaved}
         />
       )}
 
-      {/* Delete Confirmation Modal */}
+      {/* Delete Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
           <div className="bg-white p-6 rounded w-96 space-y-4">
             <h2 className="text-xl font-bold">Confirm Delete</h2>
-            <p>Are you sure you want to delete "{deleteTarget.name}"?</p>
+            <p>Are you sure you want to delete this expense?</p>
             <div className="flex justify-end gap-2">
               <button
                 className="px-4 py-2 border rounded"
@@ -136,9 +152,9 @@ export default function BankAccounts() {
                 onClick={async () => {
                   if (!deleteTarget) return;
                   try {
-                    await api.delete(`/accounts/${deleteTarget.id}`);
-                    setAccounts((prev) =>
-                      prev.filter((a) => a.id !== deleteTarget.id),
+                    await api.delete(`/transactions/${deleteTarget.id}`);
+                    setTransactions((prev) =>
+                      prev.filter((t) => t.id !== deleteTarget.id),
                     );
                   } catch {
                     alert("Delete failed");

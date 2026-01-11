@@ -15,7 +15,9 @@ export default function CashAccounts() {
   const [error, setError] = useState<string | null>(null);
 
   const [showForm, setShowForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState<CashAccount | null>(null);
+  const [editingAccount, setEditingAccount] = useState<CashAccount | null>(
+    null,
+  );
   const [deleteTarget, setDeleteTarget] = useState<CashAccount | null>(null);
 
   // Fetch cash accounts
@@ -126,8 +128,8 @@ export default function CashAccounts() {
                   if (!deleteTarget) return;
                   try {
                     await api.delete(`/accounts/${deleteTarget.id}`);
-                    setAccounts(prev =>
-                      prev.filter(a => a.id !== deleteTarget.id)
+                    setAccounts((prev) =>
+                      prev.filter((a) => a.id !== deleteTarget.id),
                     );
                   } catch {
                     alert("Delete failed");
