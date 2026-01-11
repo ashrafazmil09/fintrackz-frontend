@@ -7,7 +7,7 @@ export interface BankAccount {
   name: string;
   platform: string;
   balance: number;
-  type: "BANK" | "EWALLET" | "CASH";
+  type: "BANK";
 }
 
 export default function BankAccounts() {
@@ -16,12 +16,10 @@ export default function BankAccounts() {
   const [error, setError] = useState<string | null>(null);
 
   const [showForm, setShowForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState<BankAccount | null>(
-    null,
-  );
+  const [editingAccount, setEditingAccount] = useState<BankAccount | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<BankAccount | null>(null);
 
-  // Fetch accounts
+  // Fetch bank accounts
   const fetchAccounts = async () => {
     try {
       setLoading(true);
@@ -44,9 +42,6 @@ export default function BankAccounts() {
     fetchAccounts();
   };
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
-
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
@@ -59,47 +54,55 @@ export default function BankAccounts() {
         </button>
       </div>
 
-      {accounts.length === 0 ? (
-        <p>No bank accounts found.</p>
-      ) : (
-        <table className="w-full border">
-          <thead className="bg-gray-100">
-            <tr>
-              <th className="p-2 text-left">Name</th>
-              <th className="p-2 text-left">Platform</th>
-              <th className="p-2 text-right">Balance</th>
-              <th className="p-2 text-center">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {accounts.map((acc) => (
-              <tr key={acc.id} className="border-t">
-                <td className="p-2">{acc.name}</td>
-                <td className="p-2">{acc.platform}</td>
-                <td className="p-2 text-right">RM {acc.balance.toFixed(2)}</td>
-                <td className="p-2 text-center space-x-2">
-                  <button
-                    className="text-blue-600"
-                    onClick={() => {
-                      setEditingAccount(acc);
-                      setShowForm(true);
-                    }}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="text-red-600"
-                    onClick={() => setDeleteTarget(acc)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      {loading && <p>Loading...</p>}
+      {error && <p className="text-red-500">{error}</p>}
+
+      {!loading && !error && (
+        <>
+          {accounts.length === 0 ? (
+            <p>No bank accounts found.</p>
+          ) : (
+            <table className="w-full border">
+              <thead className="bg-gray-100">
+                <tr>
+                  <th className="p-2 text-left">Name</th>
+                  <th className="p-2 text-left">Platform</th>
+                  <th className="p-2 text-right">Balance</th>
+                  <th className="p-2 text-center">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {accounts.map((acc) => (
+                  <tr key={acc.id} className="border-t">
+                    <td className="p-2">{acc.name}</td>
+                    <td className="p-2">{acc.platform}</td>
+                    <td className="p-2 text-right">RM {acc.balance.toFixed(2)}</td>
+                    <td className="p-2 text-center space-x-2">
+                      <button
+                        className="text-blue-600"
+                        onClick={() => {
+                          setEditingAccount(acc);
+                          setShowForm(true);
+                        }}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="text-red-600"
+                        onClick={() => setDeleteTarget(acc)}
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </>
       )}
 
+      {/* Add/Edit Modal */}
       {showForm && (
         <BankAccountForm
           account={editingAccount}
@@ -111,6 +114,7 @@ export default function BankAccounts() {
         />
       )}
 
+      {/* Delete Confirmation Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
           <div className="bg-white p-6 rounded w-96 space-y-4">
@@ -128,11 +132,9 @@ export default function BankAccounts() {
                 onClick={async () => {
                   if (!deleteTarget) return;
                   try {
-                    await api.delete(`/accounts/${deleteTarget.id}`, {
-                      params: { type: "BANK" },
-                    });
+                    await api.delete(`/accounts/${deleteTarget.id}`);
                     setAccounts((prev) =>
-                      prev.filter((a) => a.id !== deleteTarget.id),
+                      prev.filter((a) => a.id !== deleteTarget.id)
                     );
                   } catch {
                     alert("Delete failed");

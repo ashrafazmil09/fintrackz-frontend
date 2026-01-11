@@ -15,7 +15,7 @@ export default function CashForm({ account, onClose, onSaved }: Props) {
 
   const handleSubmit = async () => {
     if (!name) {
-      alert("Name are required");
+      alert("Name is required");
       return;
     }
 
@@ -46,7 +46,7 @@ export default function CashForm({ account, onClose, onSaved }: Props) {
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
       <div className="bg-white p-6 rounded w-96 space-y-4">
         <h2 className="text-xl font-bold">
-          {account ? "Edit WALLET" : "Add WALLET"}
+          {account ? "Edit Wallet" : "Add Wallet"}
         </h2>
 
         <input
@@ -58,6 +58,7 @@ export default function CashForm({ account, onClose, onSaved }: Props) {
 
         <input
           type="number"
+          min={0}
           className="w-full border p-2"
           placeholder="Opening Balance"
           value={balance}

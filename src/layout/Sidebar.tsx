@@ -8,6 +8,9 @@ import {
   BanknotesIcon,
   WalletIcon,
   CurrencyDollarIcon,
+  CreditCardIcon,
+  ArrowLeftEndOnRectangleIcon,
+  ArrowRightEndOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Sidebar() {
@@ -15,7 +18,7 @@ export default function Sidebar() {
   const role = token ? getRoleFromToken(token) : null;
 
   const [collapsed, setCollapsed] = useState(false);
-  const [accountsOpen, setAccountsOpen] = useState(false); // controls Accounts dropdown
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
   const links = [
     {
@@ -26,8 +29,8 @@ export default function Sidebar() {
     },
     {
       label: "Accounts",
-      roles: ["USER", "ADMIN"],
-      icon: <BanknotesIcon className="w-5 h-5" />,
+      roles: ["USER"],
+      icon: <CreditCardIcon className="w-5 h-5" />,
       dropdown: [
         {
           label: "Bank Accounts",
@@ -47,6 +50,23 @@ export default function Sidebar() {
       ],
     },
     {
+      label: "Transactions",
+      roles: ["USER"],
+      icon: <BanknotesIcon className="w-5 h-5" />,
+      dropdown: [
+        {
+          label: "Incomes",
+          to: "/transactions/incomes",
+          icon: <ArrowLeftEndOnRectangleIcon className="w-4 h-4" />,
+        },
+        {
+          label: "Expenses",
+          to: "/transactions/expenses",
+          icon: <ArrowRightEndOnRectangleIcon className="w-4 h-4" />,
+        },
+      ],
+    },
+    {
       label: "Users",
       to: "/users",
       roles: ["ADMIN"],
@@ -55,7 +75,7 @@ export default function Sidebar() {
   ];
 
   const filteredLinks = links.filter(
-    (link) => role && link.roles.includes(role.replace("ROLE_", "")),
+    (link) => role && link.roles.includes(role.replace("ROLE_", ""))
   );
 
   return (
@@ -66,12 +86,12 @@ export default function Sidebar() {
     >
       {/* Header */}
       <div className="flex items-center justify-between p-6">
-        <div className="text-xl font-bold pr-1 pb-1 transition-all duration-300">
+        <div className="text-xl font-bold">
           {collapsed ? "Ft" : "FinTrackz"}
         </div>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="flex items-center justify-center hover:bg-gray-700 rounded"
+          className="hover:bg-gray-700 rounded p-1"
         >
           <Bars3Icon className="w-6 h-6" />
         </button>
@@ -81,31 +101,27 @@ export default function Sidebar() {
       <nav className="flex-1 flex flex-col space-y-2 px-2">
         {filteredLinks.map((link) =>
           link.dropdown ? (
-            <div key={link.label} className="flex flex-col">
-              {/* Parent link */}
+            <div key={link.label}>
               <button
-                onClick={() => setAccountsOpen(!accountsOpen)}
-                className={`flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-700 w-full ${
-                  accountsOpen ? "bg-gray-700" : ""
+                onClick={() =>
+                  setOpenDropdown(
+                    openDropdown === link.label ? null : link.label
+                  )
+                }
+                className={`flex items-center gap-3 px-3 py-2 rounded w-full hover:bg-gray-700 ${
+                  openDropdown === link.label ? "bg-gray-700" : ""
                 }`}
               >
-                <span className="w-5 h-5">{link.icon}</span>
-                <span
-                  className={`transition-opacity duration-300 ${
-                    collapsed
-                      ? "opacity-0 w-0 overflow-hidden"
-                      : "opacity-100 w-auto"
-                  }`}
-                >
-                  {link.label}
-                </span>
+                {link.icon}
+                {!collapsed && <span>{link.label}</span>}
                 {!collapsed && (
-                  <span className="ml-auto">{accountsOpen ? "▾" : "▸"}</span>
+                  <span className="ml-auto">
+                    {openDropdown === link.label ? "▾" : "▸"}
+                  </span>
                 )}
               </button>
 
-              {/* Dropdown */}
-              {accountsOpen && !collapsed && (
+              {openDropdown === link.label && !collapsed && (
                 <div className="flex flex-col pl-8 mt-1 space-y-1">
                   {link.dropdown.map((sub) => (
                     <NavLink
@@ -127,25 +143,17 @@ export default function Sidebar() {
           ) : (
             <NavLink
               key={link.to}
-              to={link.to!}
+              to={link.to}
               className={({ isActive }) =>
                 `flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-700 ${
                   isActive ? "bg-gray-700" : ""
                 }`
               }
             >
-              <span className="w-5 h-5">{link.icon}</span>
-              <span
-                className={`transition-opacity duration-300 ${
-                  collapsed
-                    ? "opacity-0 w-0 overflow-hidden"
-                    : "opacity-100 w-auto"
-                }`}
-              >
-                {link.label}
-              </span>
+              {link.icon}
+              {!collapsed && <span>{link.label}</span>}
             </NavLink>
-          ),
+          )
         )}
       </nav>
 

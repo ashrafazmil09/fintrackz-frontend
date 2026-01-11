@@ -7,18 +7,16 @@ export interface EWalletAccount {
   name: string;
   platform: string;
   balance: number;
-  type: "BANK" | "EWALLET" | "CASH";
+  type: "EWALLET";
 }
 
-export default function Ewallet() {
+export default function EWallets() {
   const [accounts, setAccounts] = useState<EWalletAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [showForm, setShowForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState<EWalletAccount | null>(
-    null,
-  );
+  const [editingAccount, setEditingAccount] = useState<EWalletAccount | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<EWalletAccount | null>(null);
 
   // Fetch accounts
@@ -55,12 +53,12 @@ export default function Ewallet() {
           onClick={() => setShowForm(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded"
         >
-          + Add E-Wallets
+          + Add E-Wallet
         </button>
       </div>
 
       {accounts.length === 0 ? (
-        <p>No e-wallets found.</p>
+        <p>No E-Wallets found.</p>
       ) : (
         <table className="w-full border">
           <thead className="bg-gray-100">
@@ -100,6 +98,7 @@ export default function Ewallet() {
         </table>
       )}
 
+      {/* Add/Edit Modal */}
       {showForm && (
         <EWalletForm
           account={editingAccount}
@@ -111,6 +110,7 @@ export default function Ewallet() {
         />
       )}
 
+      {/* Delete Confirmation Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
           <div className="bg-white p-6 rounded w-96 space-y-4">
@@ -128,11 +128,9 @@ export default function Ewallet() {
                 onClick={async () => {
                   if (!deleteTarget) return;
                   try {
-                    await api.delete(`/accounts/${deleteTarget.id}`, {
-                      params: { type: "EWALLET" },
-                    });
-                    setAccounts((prev) =>
-                      prev.filter((a) => a.id !== deleteTarget.id),
+                    await api.delete(`/accounts/${deleteTarget.id}`);
+                    setAccounts(prev =>
+                      prev.filter((a) => a.id !== deleteTarget.id)
                     );
                   } catch {
                     alert("Delete failed");

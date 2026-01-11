@@ -49,7 +49,7 @@ export default function EWalletForm({ account, onClose, onSaved }: Props) {
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
       <div className="bg-white p-6 rounded w-96 space-y-4">
         <h2 className="text-xl font-bold">
-          {account ? "Edit E-WALLET" : "Add E-WALLET"}
+          {account ? "Edit E-Wallet" : "Add E-Wallet"}
         </h2>
 
         <input
@@ -61,13 +61,14 @@ export default function EWalletForm({ account, onClose, onSaved }: Props) {
 
         <input
           className="w-full border p-2"
-          placeholder="E-Wallet Platform (TNG, Grabpay)"
+          placeholder="E-Wallet Platform (TNG, GrabPay, etc.)"
           value={platform}
           onChange={(e) => setPlatform(e.target.value)}
         />
 
         <input
           type="number"
+          min={0}
           className="w-full border p-2"
           placeholder="Opening Balance"
           value={balance}

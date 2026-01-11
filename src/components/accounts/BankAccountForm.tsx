@@ -22,21 +22,20 @@ export default function BankAccountForm({ account, onClose, onSaved }: Props) {
 
     try {
       setLoading(true);
+
+      const payload = {
+        name,
+        platform,
+        balance,
+        type: "BANK", // always BANK
+      };
+
       if (account) {
-        await api.put(`/accounts/${account.id}`, {
-          name,
-          platform,
-          balance,
-          type: "BANK",
-        });
+        await api.put(`/accounts/${account.id}`, payload);
       } else {
-        await api.post("/accounts", {
-          name,
-          platform,
-          balance,
-          type: "BANK",
-        });
+        await api.post("/accounts", payload);
       }
+
       onSaved();
     } catch {
       alert("Save failed");

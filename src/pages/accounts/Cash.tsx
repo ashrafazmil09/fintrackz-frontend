@@ -5,30 +5,27 @@ import CashForm from "../../components/accounts/CashForm";
 export interface CashAccount {
   id: number;
   name: string;
-  platform: string;
   balance: number;
-  type: "BANK" | "EWALLET" | "CASH";
+  type: "CASH";
 }
 
-export default function Cash() {
+export default function CashAccounts() {
   const [accounts, setAccounts] = useState<CashAccount[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [showForm, setShowForm] = useState(false);
-  const [editingAccount, setEditingAccount] = useState<CashAccount | null>(
-    null,
-  );
+  const [editingAccount, setEditingAccount] = useState<CashAccount | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<CashAccount | null>(null);
 
-  // Fetch accounts
+  // Fetch cash accounts
   const fetchAccounts = async () => {
     try {
       setLoading(true);
       const res = await api.get("/accounts?type=CASH");
       setAccounts(res.data);
     } catch {
-      setError("Failed to load E-Wallets");
+      setError("Failed to load cash accounts");
     } finally {
       setLoading(false);
     }
@@ -50,22 +47,22 @@ export default function Cash() {
   return (
     <div className="p-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Cash</h1>
+        <h1 className="text-2xl font-bold">Cash Accounts</h1>
         <button
           onClick={() => setShowForm(true)}
           className="bg-blue-600 text-white px-4 py-2 rounded"
         >
-          + Add Wallet
+          + Add Cash Account
         </button>
       </div>
 
       {accounts.length === 0 ? (
-        <p>No Wallet found.</p>
+        <p>No cash accounts found.</p>
       ) : (
         <table className="w-full border">
           <thead className="bg-gray-100">
             <tr>
-              <th className="p-2 text-left">Wallet Name</th>
+              <th className="p-2 text-left">Name</th>
               <th className="p-2 text-right">Balance</th>
               <th className="p-2 text-center">Actions</th>
             </tr>
@@ -98,6 +95,7 @@ export default function Cash() {
         </table>
       )}
 
+      {/* Add/Edit Modal */}
       {showForm && (
         <CashForm
           account={editingAccount}
@@ -109,6 +107,7 @@ export default function Cash() {
         />
       )}
 
+      {/* Delete Confirmation Modal */}
       {deleteTarget && (
         <div className="fixed inset-0 bg-black/40 flex items-center justify-center">
           <div className="bg-white p-6 rounded w-96 space-y-4">
@@ -126,11 +125,9 @@ export default function Cash() {
                 onClick={async () => {
                   if (!deleteTarget) return;
                   try {
-                    await api.delete(`/accounts/${deleteTarget.id}`, {
-                      params: { type: "CASH" },
-                    });
-                    setAccounts((prev) =>
-                      prev.filter((a) => a.id !== deleteTarget.id),
+                    await api.delete(`/accounts/${deleteTarget.id}`);
+                    setAccounts(prev =>
+                      prev.filter(a => a.id !== deleteTarget.id)
                     );
                   } catch {
                     alert("Delete failed");

@@ -19,8 +19,10 @@ export const getProfile = async () => {
 };
 
 // ---------------- Accounts ----------------
-export const getAccounts = async () => {
-  const res = await api.get("/accounts"); 
+export const getAccounts = async (type) => {
+  const res = await api.get("/accounts", {
+    params: { type },
+  });
   return res.data;
 };
 
@@ -39,10 +41,8 @@ export const updateAccount = async (id, data) => {
   return res.data;
 };
 
-export const deleteAccount = async (id, type) => {
-  const res = await api.delete(`/accounts/${id}`, {
-    params: { type },
-  });
-  return res.data;
+export const deleteAccount = async (id) => {
+  await api.delete(`/accounts/${id}`);
 };
+
 
