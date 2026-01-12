@@ -78,7 +78,7 @@ export default function EWallets() {
                 <td className="p-2">{acc.platform}</td>
                 <td className="p-2 text-right">RM {acc.balance.toFixed(2)}</td>
                 <td className="p-2 text-center space-x-2">
-                  <button
+                  {/* <button
                     className="text-blue-600"
                     onClick={() => {
                       setEditingAccount(acc);
@@ -86,7 +86,7 @@ export default function EWallets() {
                     }}
                   >
                     Edit
-                  </button>
+                  </button> */}
                   <button
                     className="text-red-600"
                     onClick={() => setDeleteTarget(acc)}

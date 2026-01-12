@@ -82,7 +82,7 @@ export default function BankAccounts() {
                       RM {acc.balance.toFixed(2)}
                     </td>
                     <td className="p-2 text-center space-x-2">
-                      <button
+                      {/* <button
                         className="text-blue-600"
                         onClick={() => {
                           setEditingAccount(acc);
@@ -90,7 +90,7 @@ export default function BankAccounts() {
                         }}
                       >
                         Edit
-                      </button>
+                      </button> */}
                       <button
                         className="text-red-600"
                         onClick={() => setDeleteTarget(acc)}

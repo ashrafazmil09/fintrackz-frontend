@@ -11,6 +11,7 @@ import {
   CreditCardIcon,
   ArrowLeftEndOnRectangleIcon,
   ArrowRightEndOnRectangleIcon,
+  BookOpenIcon,
 } from "@heroicons/react/24/outline";
 
 export default function Sidebar() {
@@ -73,6 +74,12 @@ export default function Sidebar() {
           icon: <ArrowRightEndOnRectangleIcon className="w-4 h-4" />,
         },
       ],
+    },
+    {
+      label: "Account Ledger",
+      to: "/accountledger",
+      roles: ["USER"],
+      icon: <BookOpenIcon className="w-5 h-5" />,
     },
     {
       label: "Users",

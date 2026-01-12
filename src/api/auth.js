@@ -20,9 +20,8 @@ export const getProfile = async () => {
 
 // ---------------- Accounts ----------------
 export const getAccounts = async (type) => {
-  const res = await api.get("/accounts", {
-    params: { type },
-  });
+  const params = type ? { type } : undefined;
+  const res = await api.get("/accounts", { params });
   return res.data;
 };
 
@@ -66,4 +65,13 @@ export const updateTransaction = async (id, data) => {
 export const deleteTransaction = async (id) => {
   await api.delete(`/transactions/${id}`);
 };
+
+// ---------------- Ledgers ----------------
+export const getLedgers = async (accountId) => {
+  const res = await api.get("/ledgers", {
+    params: { accountId },
+  });
+  return res.data;
+};
+
 

@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Dashboard from "./pages/Dashboard";
-import Profile from "./pages/Profile"; // <-- import profile
+import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 import AppLayout from "./layout/AppLayout";
 import Login from "./pages/auth/Login";
@@ -10,6 +10,8 @@ import Ewallet from "./pages/accounts/EWallet";
 import Cash from "./pages/accounts/Cash";
 import Incomes from "./pages/transactions/Incomes";
 import Expenses from "./pages/transactions/Expenses";
+import AccountLedgerPageWrapper from "./pages/accountledgers/AccountLedgerPageWrapper";
+import AccountLedgerList from "./pages/accountledgers/AccountLedgerList";
 
 export default function App() {
   return (
@@ -86,6 +88,27 @@ export default function App() {
             <PrivateRoute>
               <AppLayout>
                 <Expenses />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/accountledger"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <AccountLedgerList />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/accountledger/:accountId"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <AccountLedgerPageWrapper />
               </AppLayout>
             </PrivateRoute>
           }
