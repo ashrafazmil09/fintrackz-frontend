@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
-import { getRoleFromToken } from "../utils/jwt";
+import { useAuth } from "../context/AuthContext";
+
 import {
   HomeIcon,
   UsersIcon,
@@ -15,8 +16,9 @@ import {
 } from "@heroicons/react/24/outline";
 
 export default function Sidebar() {
-  const token = localStorage.getItem("token");
-  const role = token ? getRoleFromToken(token) : null;
+  const { role } = useAuth();
+
+  const normalizedRole = role?.replace("ROLE_", "");
 
   const [collapsed, setCollapsed] = useState(false);
   const [openDropdowns, setOpenDropdowns] = useState<string[]>([]);
@@ -90,7 +92,7 @@ export default function Sidebar() {
   ];
 
   const filteredLinks = links.filter(
-    (link) => role && link.roles.includes(role.replace("ROLE_", "")),
+    (link) => normalizedRole && link.roles.includes(normalizedRole),
   );
 
   return (

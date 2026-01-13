@@ -123,13 +123,6 @@ export default function ExpensesForm({ transaction, onClose, onSaved }: Props) {
           onChange={(e) => setDescription(e.target.value)}
         />
 
-        <input
-          type="datetime-local"
-          className="w-full border p-2"
-          value={transactionDate}
-          onChange={(e) => setTransactionDate(e.target.value)}
-        />
-
         <div className="flex justify-end gap-2">
           <button onClick={onClose} className="px-4 py-2 border rounded">
             Cancel

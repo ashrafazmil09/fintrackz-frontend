@@ -12,6 +12,7 @@ import Incomes from "./pages/transactions/Incomes";
 import Expenses from "./pages/transactions/Expenses";
 import AccountLedgerPageWrapper from "./pages/accountledgers/AccountLedgerPageWrapper";
 import AccountLedgerList from "./pages/accountledgers/AccountLedgerList";
+import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
   return (
@@ -28,6 +29,16 @@ export default function App() {
             <PrivateRoute>
               <AppLayout>
                 <Dashboard />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/admin/dashboard"
+          element={
+            <PrivateRoute>
+              <AppLayout>
+                <AdminDashboard />
               </AppLayout>
             </PrivateRoute>
           }

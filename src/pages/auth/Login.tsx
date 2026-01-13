@@ -1,14 +1,19 @@
 import { useNavigate } from "react-router-dom";
 import LoginForm from "../../components/auth/LoginForm";
 import { login } from "../../api/auth";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Login() {
   const navigate = useNavigate();
 
+  const { login: loginContext } = useAuth();
+
   const handleLogin = async (email: string, password: string) => {
     try {
-      await login(email, password);
-      navigate("/dashboard");
+      const res = await login(email, password);
+      loginContext(res.token);
+      const role = res.role === "ADMIN" ? "/admin/dashboard" : "/dashboard";
+      navigate(role);
     } catch (err) {
       alert("Login failed");
       console.error(err);

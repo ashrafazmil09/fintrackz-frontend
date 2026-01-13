@@ -1,56 +1,191 @@
 import { useEffect, useState } from "react";
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+} from "chart.js";
+import { Bar } from "react-chartjs-2";
 import api from "../api/api";
 
-interface ProfileData {
-  username: string;
-  email: string;
-  role?: string;
+interface DashboardStats {
+  netWorth: number;
+  incomeThisMonth: number;
+  expenseThisMonth: number;
+  netThisMonth: number;
 }
 
+interface Transaction {
+  id: number;
+  description: string;
+  amount: number;
+  category: {
+    id: number;
+    name: string;
+    type: "INCOME" | "EXPENSE";
+  };
+  account: {
+    name: string;
+    platform: string;
+  };
+  transaction_date: string;
+}
+
+interface Account {
+  id: number;
+  name: string;
+  balance: number;
+}
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+);
+
 export default function Dashboard() {
-  const [data, setData] = useState<ProfileData | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [stats, setStats] = useState<DashboardStats>({
+    netWorth: 0,
+    incomeThisMonth: 0,
+    expenseThisMonth: 0,
+    netThisMonth: 0,
+  });
+  const [recentTransactions, setRecentTransactions] = useState<Transaction[]>(
+    [],
+  );
+  const [accounts, setAccounts] = useState<Account[]>([]);
 
   useEffect(() => {
-    api
-      .get("/me")
-      .then((res) => setData(res.data))
-      .catch(() => setError("Unauthorized"));
+    const fetchDashboard = async () => {
+      setLoading(true);
+      try {
+        const res = await api.get("/dashboard");
+        console.log("Raw dashboard response:", res);
+        console.log("Dashboard data:", res.data);
+        console.log("Stats:", res.data.stats);
+        console.log("Recent transactions:", res.data.recentTransactions);
+        console.log("Accounts:", res.data.accounts);
+
+        // Stats
+        setStats({
+          netWorth: Number(res.data.stats.netWorth),
+          incomeThisMonth: Number(res.data.stats.incomeThisMonth),
+          expenseThisMonth: Number(res.data.stats.expenseThisMonth),
+          netThisMonth: Number(res.data.stats.netThisMonth),
+        });
+
+        // Transactions
+        setRecentTransactions(res.data.recentTransactions);
+
+        // Accounts
+        setAccounts(res.data.accounts);
+      } catch (err) {
+        console.error("Failed to fetch dashboard data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboard();
   }, []);
 
-  if (error) {
-    return <p className="text-red-500">{error}</p>;
-  }
+  if (loading) return <p className="p-8">Loading dashboard...</p>;
 
-  if (!data) {
-    return <p>Loading...</p>;
-  }
+  // Chart: only expenses
+  const expenseTransactions = recentTransactions.filter(
+    (tx) => tx.category.type === "EXPENSE",
+  );
+  const chartData = {
+    labels: expenseTransactions.map((tx) => tx.description),
+    datasets: [
+      {
+        label: "Expenses (RM)",
+        data: expenseTransactions.map((tx) => tx.amount),
+        backgroundColor: "rgba(239, 68, 68, 0.7)", // red bars
+      },
+    ],
+  };
+  const chartOptions = {
+    responsive: true,
+    plugins: {
+      legend: { position: "top" as const },
+      title: { display: true, text: "Expense Breakdown (This Month)" },
+    },
+  };
 
   return (
-    <div className="p-10">
-      <h1 className="text-2xl font-bold mb-4">Dashboard</h1>
+    <div className="p-8 space-y-8">
+      <h1 className="text-2xl font-bold">Dashboard</h1>
 
-      <div className="bg-gray-100 p-4 rounded space-y-2">
-        <p>
-          <strong>Username:</strong> {data.username}
-        </p>
-        <p>
-          <strong>Email:</strong> {data.email}
-        </p>
-
-        {data.role && (
-          <>
-            <p>
-              <strong>Role:</strong> {data.role.replace("ROLE_", "")}
-            </p>
-            <p>
-              {data.role === "ROLE_ADMIN"
-                ? "Welcome ADMIN, manage your system!"
-                : "Welcome USER, here is your dashboard!"}
-            </p>
-          </>
-        )}
+      {/* KPI SECTION */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <StatCard title="Net Worth" value={stats.netWorth} />
+        <StatCard title="Income (This Month)" value={stats.incomeThisMonth} />
+        <StatCard title="Expense (This Month)" value={stats.expenseThisMonth} />
+        <StatCard title="Net (This Month)" value={stats.netThisMonth} />
       </div>
+
+      {/* MAIN CONTENT */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        {/* Expense Chart */}
+        <div className="lg:col-span-2 bg-white rounded-lg p-6 shadow">
+          <h2 className="font-semibold mb-4">Expense Breakdown</h2>
+          <div className="h-64">
+            <Bar data={chartData} options={chartOptions} />
+          </div>
+        </div>
+
+        {/* Recent Transactions */}
+        <div className="bg-white rounded-lg p-6 shadow">
+          <h2 className="font-semibold mb-4">Recent Transactions</h2>
+          <ul className="space-y-3 text-sm">
+            {recentTransactions.map((tx) => (
+              <li key={tx.id} className="flex justify-between items-center">
+                <span className="text-gray-600">{tx.description}</span>
+                <span
+                  className={
+                    tx.category.type === "INCOME"
+                      ? "text-green-600 font-medium"
+                      : "text-red-600 font-medium"
+                  }
+                >
+                  {tx.category.type === "INCOME" ? "+" : "-"}RM{tx.amount}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      {/* ACCOUNTS */}
+      <div className="bg-white rounded-lg p-6 shadow">
+        <h2 className="font-semibold mb-4">Accounts</h2>
+        <div className="space-y-3 text-sm">
+          {accounts.map((acc) => (
+            <div key={acc.id} className="flex justify-between items-center">
+              <span className="text-gray-600">{acc.name}</span>
+              <span className="font-medium">RM{acc.balance}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- Reusable Components ---------- */
+function StatCard({ title, value }: { title: string; value: number }) {
+  return (
+    <div className="bg-white rounded-lg p-4 shadow">
+      <p className="text-sm text-gray-500">{title}</p>
+      <p className="text-2xl font-bold">RM{value}</p>
     </div>
   );
 }
