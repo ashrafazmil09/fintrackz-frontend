@@ -17,7 +17,6 @@ import {
 
 export default function Sidebar() {
   const { role } = useAuth();
-
   const normalizedRole = role?.replace("ROLE_", "");
 
   const [collapsed, setCollapsed] = useState(false);
@@ -97,32 +96,34 @@ export default function Sidebar() {
 
   return (
     <aside
-      className={`bg-gray-800 text-white flex flex-col transition-all duration-300 ${
+      className={`bg-gray-900 text-gray-100 flex flex-col transition-all duration-300 ${
         collapsed ? "w-20" : "w-64"
       }`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-6">
-        <div className="text-xl font-bold">
+      <div className="flex items-center justify-between p-6 border-b border-gray-700">
+        <div className="text-xl font-bold text-orange-400">
           {collapsed ? "Ft" : "FinTrackz"}
         </div>
         <button
           onClick={() => setCollapsed(!collapsed)}
-          className="hover:bg-gray-700 rounded p-1"
+          className="hover:bg-gray-800 rounded p-1 transition"
         >
-          <Bars3Icon className="w-6 h-6" />
+          <Bars3Icon className="w-6 h-6 text-gray-100" />
         </button>
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 flex flex-col space-y-2 px-2">
+      <nav className="flex-1 flex flex-col space-y-1 px-2 mt-2">
         {filteredLinks.map((link) =>
           link.dropdown ? (
             <div key={link.label}>
               <button
                 onClick={() => toggleDropdown(link.label)}
-                className={`flex items-center gap-3 px-3 py-2 rounded w-full hover:bg-gray-700 ${
-                  openDropdowns.includes(link.label) ? "bg-gray-700" : ""
+                className={`flex items-center gap-3 px-3 py-2 rounded w-full hover:bg-orange-500 hover:text-white transition-colors ${
+                  openDropdowns.includes(link.label)
+                    ? "bg-orange-500 text-white"
+                    : ""
                 }`}
               >
                 {link.icon}
@@ -141,8 +142,8 @@ export default function Sidebar() {
                       key={sub.to}
                       to={sub.to}
                       className={({ isActive }) =>
-                        `flex items-center gap-2 px-3 py-1 rounded hover:bg-gray-700 ${
-                          isActive ? "bg-gray-700" : ""
+                        `flex items-center gap-2 px-3 py-1 rounded hover:bg-orange-500 hover:text-white transition-colors ${
+                          isActive ? "bg-orange-500 text-white" : ""
                         }`
                       }
                     >
@@ -158,8 +159,8 @@ export default function Sidebar() {
               key={link.to}
               to={link.to}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2 rounded hover:bg-gray-700 ${
-                  isActive ? "bg-gray-700" : ""
+                `flex items-center gap-3 px-3 py-2 rounded hover:bg-orange-500 hover:text-white transition-colors ${
+                  isActive ? "bg-orange-500 text-white" : ""
                 }`
               }
             >
@@ -171,8 +172,8 @@ export default function Sidebar() {
       </nav>
 
       {/* Footer */}
-      <div className="p-4 text-sm text-gray-400">
-        {collapsed ? "v1" : "v1.0"}
+      <div className="p-4 text-sm text-gray-400 border-t border-gray-700">
+        {!collapsed && "v1.0"} {collapsed && "v1"}
       </div>
     </aside>
   );

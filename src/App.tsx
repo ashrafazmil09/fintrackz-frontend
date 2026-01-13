@@ -4,7 +4,7 @@ import Profile from "./pages/Profile";
 import PrivateRoute from "./components/PrivateRoute";
 import AppLayout from "./layout/AppLayout";
 import Login from "./pages/auth/Login";
-import Registration from "./pages/Registration";
+import Registration from "./pages/auth/Registration";
 import BankAccounts from "./pages/accounts/BankAccounts";
 import Ewallet from "./pages/accounts/EWallet";
 import Cash from "./pages/accounts/Cash";
