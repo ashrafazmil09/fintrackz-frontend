@@ -13,6 +13,7 @@ import Expenses from "./pages/transactions/Expenses";
 import AccountLedgerPageWrapper from "./pages/accountledgers/AccountLedgerPageWrapper";
 import AccountLedgerList from "./pages/accountledgers/AccountLedgerList";
 import AdminDashboard from "./pages/AdminDashboard";
+import Unauthorized from "./pages/Unauthorized";
 
 export default function App() {
   return (
@@ -26,87 +27,95 @@ export default function App() {
         <Route
           path="/dashboard"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["USER", "ADMIN"]}>
               <AppLayout>
                 <Dashboard />
               </AppLayout>
             </PrivateRoute>
           }
         />
+
         <Route
           path="/admin/dashboard"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["ADMIN"]}>
               <AppLayout>
                 <AdminDashboard />
               </AppLayout>
             </PrivateRoute>
           }
         />
+
         <Route
           path="/profile"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["USER", "ADMIN"]}>
               <AppLayout>
                 <Profile />
               </AppLayout>
             </PrivateRoute>
           }
         />
+
         <Route
           path="/accounts/bankaccounts"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["USER"]}>
               <AppLayout>
                 <BankAccounts />
               </AppLayout>
             </PrivateRoute>
           }
         />
+
         <Route
           path="/accounts/ewallet"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["USER"]}>
               <AppLayout>
                 <Ewallet />
               </AppLayout>
             </PrivateRoute>
           }
         />
+
         <Route
           path="/accounts/cash"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["USER"]}>
               <AppLayout>
                 <Cash />
               </AppLayout>
             </PrivateRoute>
           }
         />
+
         <Route
           path="/transactions/incomes"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["USER"]}>
               <AppLayout>
                 <Incomes />
               </AppLayout>
             </PrivateRoute>
           }
         />
+
         <Route
           path="/transactions/expenses"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["USER"]}>
               <AppLayout>
                 <Expenses />
               </AppLayout>
             </PrivateRoute>
           }
         />
+
         <Route
           path="/accountledger"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["USER"]}>
               <AppLayout>
                 <AccountLedgerList />
               </AppLayout>
@@ -117,7 +126,7 @@ export default function App() {
         <Route
           path="/accountledger/:accountId"
           element={
-            <PrivateRoute>
+            <PrivateRoute allowedRoles={["USER"]}>
               <AppLayout>
                 <AccountLedgerPageWrapper />
               </AppLayout>
@@ -126,7 +135,8 @@ export default function App() {
         />
 
         {/* Fallback */}
-        <Route path="*" element={<Navigate to="/dashboard" replace />} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="*" element={<Navigate to="/unauthorized" replace />} />
       </Routes>
     </BrowserRouter>
   );

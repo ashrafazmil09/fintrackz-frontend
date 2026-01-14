@@ -20,6 +20,12 @@ export const getDashboard = async () => {
   return res.data;
 };
 
+// ---------------- Admin Dashboard ----------------
+export const getAdminDashboard = async () => {
+  const res = await api.get("/admin/dashboard");
+  return res.data;
+};
+
 // ---------------- Profile ----------------
 export const getProfile = async () => {
   const res = await api.get("/me");

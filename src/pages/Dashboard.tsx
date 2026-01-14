@@ -67,11 +67,6 @@ export default function Dashboard() {
       setLoading(true);
       try {
         const res = await api.get("/dashboard");
-        console.log("Raw dashboard response:", res);
-        console.log("Dashboard data:", res.data);
-        console.log("Stats:", res.data.stats);
-        console.log("Recent transactions:", res.data.recentTransactions);
-        console.log("Accounts:", res.data.accounts);
 
         // Stats
         setStats({
