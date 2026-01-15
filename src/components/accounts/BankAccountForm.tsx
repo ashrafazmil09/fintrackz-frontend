@@ -65,13 +65,13 @@ export default function BankAccountForm({ account, onClose, onSaved }: Props) {
           onChange={(e) => setPlatform(e.target.value)}
         />
 
-        <input
+        {/* <input
           type="number"
           className="w-full border p-2"
           placeholder="Opening Balance"
           value={balance}
           onChange={(e) => setBalance(Number(e.target.value))}
-        />
+        /> */}
 
         <div className="flex justify-end gap-2">
           <button onClick={onClose} className="px-4 py-2 border rounded">

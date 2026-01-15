@@ -11,6 +11,7 @@ import {
   BuildingOfficeIcon,
 } from "@heroicons/react/24/outline";
 import Avatar from "../components/ui/avatar";
+import { useAuth } from "../context/AuthContext";
 
 interface ProfileData {
   username: string;
@@ -26,6 +27,7 @@ interface ProfileData {
 }
 
 export default function Profile() {
+  const { user, setUser } = useAuth();
   const [data, setData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -63,13 +65,6 @@ export default function Profile() {
 
   const roleColor = data.role === "ADMIN" ? "bg-orange-500" : "bg-gray-400";
 
-  const getInitials = (name: string) => {
-    const words = name.split(" ");
-    return words.length > 1
-      ? `${words[0][0]}${words[1][0]}`.toUpperCase()
-      : name[0].toUpperCase();
-  };
-
   const handleChange = (field: keyof ProfileData, value: string) => {
     setData({ ...data, [field]: value });
   };
@@ -92,7 +87,12 @@ export default function Profile() {
       if (data?.companyName) formData.append("companyName", data.companyName);
       if (selectedImage) formData.append("profilePicture", selectedImage);
 
-      await updateProfile(formData);
+      // Call your API
+      const updatedProfile = await updateProfile(formData);
+
+      setData({ ...data, ...updatedProfile });
+
+      setUser({ ...user, ...updatedProfile });
 
       setEditing(false);
       setSelectedImage(null);
@@ -112,7 +112,7 @@ export default function Profile() {
         {/* Avatar */}
         <Avatar
           profilePictureUrl={data.profilePictureUrl}
-          fullName={data.fullName}
+          userName={data.username}
           onFileSelect={(file) => setSelectedImage(file)}
           size={220}
           editing={editing}
@@ -162,7 +162,9 @@ export default function Profile() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full">
           {/* Full Name */}
           <div className="flex flex-col gap-1 p-4 bg-gray-50 rounded-xl shadow-sm">
-            <p className="text-gray-500 text-sm">Full Name</p>
+            <p className="text-gray-500 text-sm flex items-center gap-1">
+              <UserIcon className="w-4 h-4 text-gray-400" /> Full Name
+            </p>
             {editing ? (
               <input
                 className="border p-2 rounded-md w-full"
@@ -178,7 +180,9 @@ export default function Profile() {
 
           {/* Date of Birth */}
           <div className="flex flex-col gap-1 p-4 bg-gray-50 rounded-xl shadow-sm">
-            <p className="text-gray-500 text-sm">Date of Birth</p>
+            <p className="text-gray-500 text-sm flex items-center gap-1">
+              <CalendarIcon className="w-4 h-4 text-gray-400" /> Date of Birth
+            </p>
             {editing ? (
               <input
                 type="date"
@@ -193,9 +197,11 @@ export default function Profile() {
             )}
           </div>
 
-          {/* Phone */}
+          {/* Phone Number */}
           <div className="flex flex-col gap-1 p-4 bg-gray-50 rounded-xl shadow-sm">
-            <p className="text-gray-500 text-sm">Phone Number</p>
+            <p className="text-gray-500 text-sm flex items-center gap-1">
+              <PhoneIcon className="w-4 h-4 text-gray-400" /> Phone Number
+            </p>
             {editing ? (
               <input
                 type="tel"
@@ -210,7 +216,9 @@ export default function Profile() {
 
           {/* Address */}
           <div className="flex flex-col gap-1 p-4 bg-gray-50 rounded-xl shadow-sm">
-            <p className="text-gray-500 text-sm">Address</p>
+            <p className="text-gray-500 text-sm flex items-center gap-1">
+              <MapPinIcon className="w-4 h-4 text-gray-400" /> Address
+            </p>
             {editing ? (
               <input
                 className="border p-2 rounded-md w-full"
@@ -224,7 +232,10 @@ export default function Profile() {
 
           {/* Company Name */}
           <div className="flex flex-col gap-1 p-4 bg-gray-50 rounded-xl shadow-sm">
-            <p className="text-gray-500 text-sm">Company Name</p>
+            <p className="text-gray-500 text-sm flex items-center gap-1">
+              <BuildingOfficeIcon className="w-4 h-4 text-gray-400" /> Company
+              Name
+            </p>
             {editing ? (
               <input
                 className="border p-2 rounded-md w-full"
@@ -238,24 +249,30 @@ export default function Profile() {
             )}
           </div>
 
-          {/* Join Date (read-only) */}
+          {/* Email */}
           <div className="flex flex-col gap-1 p-4 bg-gray-50 rounded-xl shadow-sm">
-            <p className="text-gray-500 text-sm">Join Date</p>
-            <p className="text-gray-800 font-medium">
-              {formatDate(data.joinDate, "date")}
+            <p className="text-gray-500 text-sm flex items-center gap-1">
+              <EnvelopeIcon className="w-4 h-4 text-gray-400" /> Email
             </p>
-          </div>
-
-          {/* Email (read-only) */}
-          <div className="flex flex-col gap-1 p-4 bg-gray-50 rounded-xl shadow-sm">
-            <p className="text-gray-500 text-sm">Email</p>
             <p className="text-gray-800 font-medium">{data.email}</p>
           </div>
 
-          {/* Role (read-only) */}
+          {/* Role */}
           <div className="flex flex-col gap-1 p-4 bg-gray-50 rounded-xl shadow-sm">
-            <p className="text-gray-500 text-sm">Role</p>
-            <p className="text-gray-800 font-medium">{data.role}</p>
+            <p className="text-gray-500 text-sm flex items-center gap-1">
+              <IdentificationIcon className="w-4 h-4 text-gray-400" /> Role
+            </p>
+            <p className="text-gray-800 font-medium">{data.role || "-"}</p>
+          </div>
+
+          {/* Join Date */}
+          <div className="flex flex-col gap-1 p-4 bg-gray-50 rounded-xl shadow-sm">
+            <p className="text-gray-500 text-sm flex items-center gap-1">
+              <CalendarIcon className="w-4 h-4 text-gray-400" /> Join Date
+            </p>
+            <p className="text-gray-800 font-medium">
+              {formatDate(data.joinDate, "date")}
+            </p>
           </div>
         </div>
       </div>
