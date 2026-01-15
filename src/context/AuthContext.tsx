@@ -12,22 +12,23 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [token, setToken] = useState<string | null>(() =>
-    localStorage.getItem("token"),
-  );
+  const [token, setToken] = useState<string | null>(() => localStorage.getItem("token"));
   const [role, setRole] = useState<string | null>(null);
+  const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    if (!token || isTokenExpired(token)) {
-      logout();
-    } else {
+    if (token && !isTokenExpired(token)) {
       setRole(getRoleFromToken(token));
+    } else {
+      logout();
     }
-  }, [token]);
+    setIsLoaded(true);
+  }, []);
 
   const login = (newToken: string) => {
     localStorage.setItem("token", newToken);
     setToken(newToken);
+    setRole(getRoleFromToken(newToken));
   };
 
   const logout = () => {
@@ -36,12 +37,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setRole(null);
   };
 
+  if (!isLoaded) return null;
+
   return (
     <AuthContext.Provider
       value={{
         token,
         role,
-        isAuthenticated: !!token,
+        isAuthenticated: !!token && !!role && !isTokenExpired(token),
         login,
         logout,
       }}
@@ -53,8 +56,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
 export function useAuth() {
   const ctx = useContext(AuthContext);
-  if (!ctx) {
-    throw new Error("useAuth must be used inside AuthProvider");
-  }
+  if (!ctx) throw new Error("useAuth must be used inside AuthProvider");
   return ctx;
 }

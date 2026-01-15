@@ -34,7 +34,13 @@ export default function Sidebar() {
     {
       label: "Dashboard",
       to: "/dashboard",
-      roles: ["USER", "ADMIN"],
+      roles: ["USER"],
+      icon: <HomeIcon className="w-5 h-5" />,
+    },
+    {
+      label: "Dashboard",
+      to: "/admin/dashboard",
+      roles: ["ADMIN"],
       icon: <HomeIcon className="w-5 h-5" />,
     },
     {
