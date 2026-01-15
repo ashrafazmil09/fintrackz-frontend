@@ -1,20 +1,19 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { parseJwt } from "../utils/jwt";
 import { useAuth } from "../context/AuthContext";
-import { UserIcon, ChevronDownIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import Avatar from "../components/ui/avatar";
 
 export default function TopBar() {
   const navigate = useNavigate();
-  const { token, logout } = useAuth();
-  const payload = token ? parseJwt(token) : null;
-  const username = payload?.sub || "User";
-  const role = payload?.role?.replace("ROLE_", "") || "";
+  const { logout, user } = useAuth();
+
+  const username = user?.username || "User";
+  const role = user?.role?.replace("ROLE_", "") || "";
 
   const [open, setOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -35,7 +34,11 @@ export default function TopBar() {
           onClick={() => setOpen(!open)}
           className="flex items-center gap-2 bg-gray-100 hover:bg-gray-200 transition rounded-full px-3 py-1 shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
         >
-          <UserIcon className="w-6 h-6 text-gray-600" />
+          <Avatar
+            profilePictureUrl={user?.profilePictureUrl}
+            size={42}
+            editing={false}
+          />
           <div className="flex flex-col items-start leading-tight">
             <span className="text-sm font-medium text-gray-700">
               {username}

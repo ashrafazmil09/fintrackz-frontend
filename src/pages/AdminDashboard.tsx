@@ -11,6 +11,7 @@ import {
 } from "chart.js";
 import { Bar, Pie } from "react-chartjs-2";
 import { getAdminDashboard } from "../api/auth";
+import { useAuth } from "../context/AuthContext";
 
 interface AdminStats {
   totalUsers: number;
@@ -30,6 +31,7 @@ ChartJS.register(
 );
 
 export default function AdminDashboard() {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<AdminStats>({
     totalUsers: 0,
@@ -66,6 +68,8 @@ export default function AdminDashboard() {
     fetchAdminDashboard();
   }, []);
 
+  const username = user?.username || "User";
+
   if (loading) return <p className="p-8">Loading admin dashboard...</p>;
 
   const activeUserChartData = {
@@ -93,8 +97,9 @@ export default function AdminDashboard() {
   };
 
   return (
-    <div className="p-8 space-y-8">
-      <h1 className="text-2xl font-bold">Admin Dashboard</h1>
+    <div className="p-8 space-y-4">
+      <h1 className="text-3xl font-bold">Welcome, {username} </h1>
+      <h1 className="text-xl font-bold">Admin Dashboard</h1>
 
       {/* KPI */}
       <div className="grid grid-cols-1 md:grid-cols-4 gap-4">

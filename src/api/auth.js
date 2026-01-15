@@ -28,7 +28,16 @@ export const getAdminDashboard = async () => {
 
 // ---------------- Profile ----------------
 export const getProfile = async () => {
-  const res = await api.get("/me");
+    const res = await api.get("/me");
+    return res.data;
+};
+
+export const updateProfile = async (formData) => {
+  const res = await api.put("/me", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
   return res.data;
 };
 

@@ -10,6 +10,7 @@ import {
 } from "chart.js";
 import { Bar } from "react-chartjs-2";
 import api from "../api/api";
+import { useAuth } from "../context/AuthContext";
 
 interface DashboardStats {
   netWorth: number;
@@ -50,6 +51,7 @@ ChartJS.register(
 );
 
 export default function Dashboard() {
+  const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState<DashboardStats>({
     netWorth: 0,
@@ -91,6 +93,8 @@ export default function Dashboard() {
     fetchDashboard();
   }, []);
 
+  const username = user?.username || "User";
+
   if (loading) return <p className="p-8">Loading dashboard...</p>;
 
   // Chart: only expenses
@@ -116,7 +120,8 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="p-8 space-y-8">
+    <div className="p-8 space-y-4">
+      <h1 className="text-3xl font-bold">Welcome, {username} </h1>
       <h1 className="text-2xl font-bold">Dashboard</h1>
 
       {/* KPI SECTION */}
