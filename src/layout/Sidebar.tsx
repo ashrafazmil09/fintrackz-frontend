@@ -90,7 +90,7 @@ export default function Sidebar() {
     },
     {
       label: "Users",
-      to: "/users",
+      to: "/admin/userlist",
       roles: ["ADMIN"],
       icon: <UsersIcon className="w-5 h-5" />,
     },

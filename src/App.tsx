@@ -14,6 +14,7 @@ import AccountLedgerPageWrapper from "./pages/accountledgers/AccountLedgerPageWr
 import AccountLedgerList from "./pages/accountledgers/AccountLedgerList";
 import AdminDashboard from "./pages/AdminDashboard";
 import Unauthorized from "./pages/Unauthorized";
+import UserLists from "./pages/admin/UserLists";
 
 export default function App() {
   return (
@@ -41,6 +42,17 @@ export default function App() {
             <PrivateRoute allowedRoles={["ADMIN"]}>
               <AppLayout>
                 <AdminDashboard />
+              </AppLayout>
+            </PrivateRoute>
+          }
+        />
+
+        <Route
+          path="/admin/userlist"
+          element={
+            <PrivateRoute allowedRoles={["ADMIN"]}>
+              <AppLayout>
+                <UserLists />
               </AppLayout>
             </PrivateRoute>
           }
