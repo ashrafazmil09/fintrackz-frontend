@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { isTokenExpired } from "../utils/jwt";
@@ -15,18 +15,22 @@ export default function PrivateRoute({
   const { token, role, logout } = useAuth();
   const normalizedRole = role?.replace("ROLE_", "");
 
-  // 1️⃣ Check token
-  if (!token || isTokenExpired(token)) {
-    logout();
-    return <Navigate to="/login" replace />;
-  }
+  const [redirect, setRedirect] = useState<string | null>(null);
 
-  // 2️⃣ Check role
-  if (
-    allowedRoles &&
-    (!normalizedRole || !allowedRoles.includes(normalizedRole))
-  ) {
-    return <Navigate to="/unauthorized" replace />;
+  useEffect(() => {
+    if (!token || isTokenExpired(token)) {
+      logout();
+      setRedirect("/login");
+    } else if (
+      allowedRoles &&
+      (!normalizedRole || !allowedRoles.includes(normalizedRole))
+    ) {
+      setRedirect("/unauthorized");
+    }
+  }, [token, normalizedRole, allowedRoles, logout]);
+
+  if (redirect) {
+    return <Navigate to={redirect} replace />;
   }
 
   return <>{children}</>;
