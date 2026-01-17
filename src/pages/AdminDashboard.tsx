@@ -117,8 +117,17 @@ export default function AdminDashboard() {
         {/* Pie Chart */}
         <div className="bg-white rounded-lg p-6 shadow">
           <h2 className="font-semibold mb-4">Active vs Inactive Users</h2>
-          <div className="h-72 flex items-center justify-center">
-            <Pie data={activeUserChartData} />
+          <div className="h-72 w-full flex items-center justify-center">
+            <Pie
+              data={activeUserChartData}
+              options={{
+                maintainAspectRatio: false,
+                plugins: {
+                  legend: { position: "bottom" },
+                  title: { display: true, text: "Active vs Inactive Users" },
+                },
+              }}
+            />
           </div>
         </div>
 
